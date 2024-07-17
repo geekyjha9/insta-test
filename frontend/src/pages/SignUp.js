@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import logo from "../img/logo.png";
+const API_URL = window.location.origin.replace("3000","5000")
 
 export default function SignUp() {
   const [fullName, setFullName] = useState("");
@@ -17,7 +18,7 @@ export default function SignUp() {
   const signup = async () => {
     console.log("Sign up function called");
     try {
-      const response = await fetch("http://localhost:5000/api/users/register", {
+      const response = await fetch(`${API_URL}/api/users/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
