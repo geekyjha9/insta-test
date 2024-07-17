@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jasmine-dom";
 import { BrowserRouter } from "react-router-dom";
 import SignUp from "../src/pages/SignUp";
+const API_URL = window.location.origin.replace("3000","5000")
 
 describe("SignUp component tests", () => {
   beforeEach(() => {
@@ -86,7 +87,7 @@ describe("SignUp component tests", () => {
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Assert that fetch was called with the correct data
-    expect(fetch).toHaveBeenCalledWith("http://localhost:5000/api/users/register", {
+    expect(fetch).toHaveBeenCalledWith(`${API_URL}/api/users/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
