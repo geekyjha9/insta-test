@@ -7,11 +7,19 @@ import SignUp from "../src/pages/SignUp";
 describe("SignUp component tests", () => {
   beforeEach(() => {
     // Mock fetch globally to spy on it
-    spyOn(window, "fetch").and.returnValue(
-      Promise.resolve({
-        json: () => Promise.resolve({}),
-      })
-    );
+    spyOn(window, "fetch").and.callFake((url, options) => {
+      if (url.endsWith("/api/users/register") && options.method === "POST") {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ message: "Registered Successfully" }),
+        });
+      }
+      return Promise.resolve({
+        ok: false,
+        status: 500,
+        json: () => Promise.resolve({ error: "An error occurred" }),
+      });
+    });
   });
 
   afterEach(() => {
@@ -19,7 +27,8 @@ describe("SignUp component tests", () => {
     window.fetch.calls.reset();
   });
 
-  it("SignUp form should be rendered with all necessary fields", () => {
+ 
+  it("[REQ001]_renders_SignUp_form_with_all_necessary_fields", () => {
     render(
       <BrowserRouter>
         <SignUp />
@@ -32,34 +41,62 @@ describe("SignUp component tests", () => {
     expect(screen.getByPlaceholderText(/Password/i)).toBeTruthy();
   });
 
-  it("should call the signup function on form submission", async () => {
+
+
+  it("[REQ002]_register_new_user_and_displays_success_message", async () => {
     render(
       <BrowserRouter>
         <SignUp />
       </BrowserRouter>
     );
 
-    const nameInput = screen.getByPlaceholderText(/Full Name/i);
-    fireEvent.change(nameInput, { target: { value: "John Doe" } });
+    // Fill out the form
+    fireEvent.change(screen.getByPlaceholderText(/Full Name/i), { target: { value: "John Doe" } });
+    fireEvent.change(screen.getByPlaceholderText(/Email/i), { target: { value: "geekyjha@gmail.com" } });
+    fireEvent.change(screen.getByPlaceholderText(/Username/i), { target: { value: "johndoe" } });
+    fireEvent.change(screen.getByPlaceholderText(/Password/i), { target: { value: "StrongPassword#123" } });
 
-    const emailInput = screen.getByPlaceholderText(/Email/i);
-    fireEvent.change(emailInput, { target: { value: "geekyjha@gmail.com" } });
+    // Submit the form
+    fireEvent.click(screen.getByRole("button", { name: /Sign Up/i }));
 
-    const usernameInput = screen.getByPlaceholderText(/Username/i);
-    fireEvent.change(usernameInput, { target: { value: "johndoe" } });
+    // Wait for the registration to complete
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-    const passwordInput = screen.getByPlaceholderText(/Password/i);
-    fireEvent.change(passwordInput, {
-      target: { value: "StrongPassword#123" },
-    });
-
-    const submitButton = screen.getByRole("button", { name: /Sign Up/i });
-    fireEvent.click(submitButton);
-
-    await waitFor(() => {
-      expect(fetch).toHaveBeenCalledWith("http://localhost:4000/signup");
-    });
+    // Assert that the success message is displayed
+    expect(screen.getByText("Registered Successfully")).toBeTruthy();
   });
 
+  it("[REQ006]_submits_form_with_all_fields_filled_and_sends_correct_data", async () => {
+    render(
+      <BrowserRouter>
+        <SignUp />
+      </BrowserRouter>
+    );
 
+    // Fill out the form
+    fireEvent.change(screen.getByPlaceholderText(/Full Name/i), { target: { value: "John Doe" } });
+    fireEvent.change(screen.getByPlaceholderText(/Email/i), { target: { value: "geekyjha@gmail.com" } });
+    fireEvent.change(screen.getByPlaceholderText(/Username/i), { target: { value: "johndoe" } });
+    fireEvent.change(screen.getByPlaceholderText(/Password/i), { target: { value: "StrongPassword#123" } });
+
+    // Submit the form
+    fireEvent.click(screen.getByRole("button", { name: /Sign Up/i }));
+
+    // Wait for the form submission to complete
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Assert that fetch was called with the correct data
+    expect(fetch).toHaveBeenCalledWith("http://localhost:5000/api/users/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: "johndoe",
+        email: "geekyjha@gmail.com",
+        password: "StrongPassword#123",
+        fullname: "John Doe",
+      }),
+    });
+  });
 });

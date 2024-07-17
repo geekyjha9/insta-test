@@ -22,7 +22,7 @@ describe('User API', () => {
       jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000; // Set timeout to 10 seconds globally
     });
 
-    it('should register a new user', async () => {
+    it('[REQ003]_register_new_user_successfully', async () => {
       const response = await request(app)
         .post('/api/users/register')
         .send({
@@ -39,7 +39,7 @@ describe('User API', () => {
       });
     });
 
-    it('should not register a user with an existing email', async () => {
+    it('[REQ004]_not_register_a_user_with_an_existing_email', async () => {
       await User.create({
         username: 'anotheruser',
         email: 'testuser@example.com',
@@ -62,7 +62,7 @@ describe('User API', () => {
       });
     });
 
-    it('should not register a user with an existing username', async () => {
+    it('[REQ005]_not_register_a_user_with_an_existing_username', async () => {
       await User.create({
         username: 'testuser',
         email: 'newuser@example.com',
