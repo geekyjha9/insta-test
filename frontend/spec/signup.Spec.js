@@ -108,20 +108,21 @@ describe("SignUp component tests", () => {
       </BrowserRouter>
     );
 
-    const passwordInput = screen.getByPlaceholderText(/Password/i);
-    fireEvent.change(passwordInput, { target: { value: "short" } });
 
-    const submitButton = screen.getByRole("button", { name: /Sign Up/i });
-    fireEvent.click(submitButton);
+    // Fill out the form
+    fireEvent.change(screen.getByPlaceholderText(/Full Name/i), { target: { value: "John Doe" } });
+    fireEvent.change(screen.getByPlaceholderText(/Email/i), { target: { value: "geekyjha@gmail.com" } });
+    fireEvent.change(screen.getByPlaceholderText(/Username/i), { target: { value: "johndoe" } });
+    fireEvent.change(screen.getByPlaceholderText(/Password/i), { target: { value: "short" } });
 
-    // Define a function to find the error message using queryByText
-    const findErrorMessage = () => {
-      return screen.queryByText(/Password must contain at least 8 characters/i);
-    };
+    // Submit the form
+    fireEvent.click(screen.getByRole("button", { name: /Sign Up/i }));
 
-    await waitFor(() => {
-      expect(findErrorMessage()).toBeDefined(); // Assert with toBeDefined()
-    });
+    // Wait for the form submission to complete
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Assert that the success message is displayed
+    expect(screen.getByText("Password must contain at least 8 characters, including at least 1 number and 1 includes both lower and uppercase letters and special characters for example #,?,!")).toBeTruthy();
   });
 
 });
