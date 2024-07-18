@@ -19,9 +19,9 @@ export default function SignUp() {
 
     const validateInputs = () => {
 
-        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Minimum eight characters, at least one letter and one number
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/; // Minimum eight characters, at least one letter and one number
         if (!passwordPattern.test(password)) {
-            toast.error("Password must be at least 8 characters long and include at least one letter and one number");
+            toast.error("Password must contain at least 8 characters, including at least 1 number and 1 includes both lower and uppercase letters and special characters for example #,?,!");
             return false;
         }
 
