@@ -2,7 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const sequelize = require("./config/db");
 const userRoutes = require("./routes/userRoutes")
-const cors = require("cors")
+const cors = require("cors");
+require('dotenv').config(); // Load environment variables from .env file
 
 
 const app = express()

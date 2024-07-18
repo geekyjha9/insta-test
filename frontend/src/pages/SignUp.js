@@ -1,23 +1,35 @@
 import React, { useState } from "react";
-import logo from "../img/logo.png"
+import logo from "../img/logo.png";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-const API_URL = window.location.origin.replace("3000", "5000")
-
+const API_URL = window.location.origin.replace("3000", "5000");
 
 export default function SignUp() {
-    const [fullName, setFullName] = useState("")
-    const [email, setEmail] = useState("")
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
+    const [fullName, setFullName] = useState("");
+    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        signup()
-    }
+        if (validateInputs()) {
+            signup();
+        }
+    };
+
+    const validateInputs = () => {
+
+        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Minimum eight characters, at least one letter and one number
+        if (!passwordPattern.test(password)) {
+            toast.error("Password must be at least 8 characters long and include at least one letter and one number");
+            return false;
+        }
+
+        return true;
+    };
 
     const signup = async () => {
-        console.log("Sing up funtion called");
+        console.log("Signup function called");
         try {
             const response = await fetch(`${API_URL}/api/users/register`, {
                 method: "POST",
@@ -34,29 +46,30 @@ export default function SignUp() {
             const data = await response.json();
             if (response.ok) {
                 toast.success(data.message);
-                setFullName("")
-                setEmail("")
-                setPassword("")
-                setUsername("")
-                console.log(data)
+                setFullName("");
+                setEmail("");
+                setPassword("");
+                setUsername("");
+                console.log(data);
             } else {
-                toast.error(data.error)
+                toast.error(data.error);
             }
 
         } catch (err) {
-            toast.error(err)
+            toast.error(err.message);
         }
-    }
+    };
+
     return (
         <div className="flex items-center justify-center min-h-screen">
-             <ToastContainer />
-            {/* main contianer  */}
+            <ToastContainer />
+            {/* main container */}
             <div className="flex w-full max-w-4xl rounded-lg overflow-hidden justify-center">
-                {/* signup form contiane r */}
-                <div className="w-full md:w-1/2 p-8 md:border-gray-300 md:rouded-lg">
+                {/* signup form container */}
+                <div className="w-full md:w-1/2 p-8 md:border-gray-300 md:rounded-lg">
                     <div className="flex flex-col items-center">
                         <img className="h-12 mb-6" src={logo} alt="Logo" />
-                        <p className="text-gray-600 text-sm text-center my-5">Sign up to see photos and videos from you friends</p>
+                        <p className="text-gray-600 text-sm text-center my-5">Sign up to see photos and videos from your friends</p>
                         <form className="space-y-4 w-full" onSubmit={handleSubmit}>
                             <input type="text" placeholder="Full Name"
                                 value={fullName}
@@ -84,15 +97,13 @@ export default function SignUp() {
                             <span className="px-4 text-gray-400">OR</span>
                             <div className="flex-grow border-t border-gray-300"></div>
                         </div>
-                        <button className="flex items-center justify-center w-full bg-blue-800 hover:bg-blue-900 text-white font-semibold py-2 rounded-md focus:outline-none focus:ring focus:borde-blue=300">Continue With Google </button>
+                        <button className="flex items-center justify-center w-full bg-blue-800 hover:bg-blue-900 text-white font-semibold py-2 rounded-md focus:outline-none focus:ring focus:border-blue-300">Continue With Google</button>
                         <div className="mt-4 text-center text-gray-700">
-                            <p>Have an account? <a href="">Log In </a></p>
+                            <p>Have an account? <a href="">Log In</a></p>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
-
-    )
+    );
 }

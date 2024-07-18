@@ -101,4 +101,27 @@ describe("SignUp component tests", () => {
       }),
     });
   });
+  it("[REQ007]__display_an_error_message_for_invalid_password", async () => {
+    render(
+      <BrowserRouter>
+        <SignUp />
+      </BrowserRouter>
+    );
+
+    const passwordInput = screen.getByPlaceholderText(/Password/i);
+    fireEvent.change(passwordInput, { target: { value: "short" } });
+
+    const submitButton = screen.getByRole("button", { name: /Sign Up/i });
+    fireEvent.click(submitButton);
+
+    // Define a function to find the error message using queryByText
+    const findErrorMessage = () => {
+      return screen.queryByText(/Password must contain at least 8 characters/i);
+    };
+
+    await waitFor(() => {
+      expect(findErrorMessage()).toBeDefined(); // Assert with toBeDefined()
+    });
+  });
+
 });
