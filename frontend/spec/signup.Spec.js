@@ -94,9 +94,10 @@ describe("SignUp component tests", () => {
       },
       body: JSON.stringify({
         username: "johndoe",
+        fullname: "John Doe",
         email: "geekyjha@gmail.com",
         password: "StrongPassword#123",
-        fullname: "John Doe",
+        
       }),
     });
   });

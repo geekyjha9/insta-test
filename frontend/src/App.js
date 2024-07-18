@@ -9,7 +9,7 @@ function App() {
 
     <div className="App">
       <SignUp></SignUp>
-      <h1>Hello Word</h1>
+      
     </div>
 
   );
