@@ -2,7 +2,8 @@ import logo from "./logo.svg";
 import SignUp from "./pages/SignUp";
 import Home from "./pages/Home";
 import SignIn from "./pages/SignIn";
-import {BrowserRouter, Routes, Route} from "react-router-dom"
+import Profile from "./pages/Profile";
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 
 
@@ -10,15 +11,16 @@ function App() {
 
   return (
     <BrowserRouter>
-    
-    <div className="App">
-      <Routes>
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/signup" element={<SignUp />}></Route>
-        <Route path="/signin" element={<SignIn />}></Route>
-      </Routes>
-      
-    </div>
+
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<Home />}></Route>
+          <Route path="/signup" element={<SignUp />}></Route>
+          <Route path="/signin" element={<SignIn />}></Route>
+          <Route path="/profile" element={<Profile />}></Route>
+        </Routes>
+
+      </div>
     </BrowserRouter>
 
 
