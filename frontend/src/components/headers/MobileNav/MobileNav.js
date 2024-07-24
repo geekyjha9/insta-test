@@ -1,33 +1,44 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import {FaHome, FaSearch, FaUserFriends, FaUserPlus , FaPlusSquare} from "react-icons/fa"
+import { Context } from "../../../contexts/Context";
 const MobileNav = ()=>{
-    const SidebarItems = [
-        {
-            name:"Seach",
-            link:"/search",
-            icons : <FaSearch className = "text-xl" data-testid="FaSearch"/>
-        },
-        {
-            name:"Followers",
-            link:"/followers",
-            icons : <FaUserFriends className = "text-xl" data-testid="FaUserFriends"/>
-        }
-        ,
-        {
-            name:"Following",
-            link:"/following",
-            icons : <FaUserPlus className = "text-xl" data-testid="FaUserPlus"/>
-        },
+    const {setCreatePostOpen,setProfile,setSearch,setisFollowing,setfollowers} = useContext(Context);
+
+    const SidebarItems =[
+        // {
+        //     name:"Search",
+        //     link:"/search",
+        //     icons : <FaSearch className = "text-2xl"/>,
+        //     action:()=>setSearch(true)
+        // },
+        // {
+        //     name:"Followers",
+        //     link:"/followers",
+        //     icons : <FaUserFriends className = "text-2xl"/>,
+        //     action:()=>setfollowers(true)
+        // }
+        // ,
+        // {
+        //     name:"Following",
+        //     link:"/following",
+        //     icons : <FaUserPlus className = "text-2xl"/>,
+        //     action:()=>setisFollowing(true)
+        // },
         {
             name:"Create Post",
             link:"/create",
-            icons : <FaPlusSquare className = "text-xl" data-testid="FaPlusSquare"/>
+            icons : <FaPlusSquare className = "text-2xl"/>,
+            action: ()=>{
+                setCreatePostOpen(true)
+                
+            }
         },
         {
             name:"Profile",
             link:"/profile",
-            icons :<img src ="https://cdn-icons-png.flaticon.com/128/3135/3135715.png" alt="Profile" className = "h-5 w-5"/>
+            icons :<img src ="https://cdn-icons-png.flaticon.com/128/3135/3135715.png" alt="Profile" className = "h-6 w-6"/>,
+            action:()=>setProfile(true)
         }
     ]
     return (
@@ -40,8 +51,8 @@ const MobileNav = ()=>{
      </Link>  
 
      {SidebarItems.map((item)=>(
-        <Link to={item.link} key={item.name} className = "w-full h-auto flex items-center gap-x-4 p-3 bg-transparent hover:bg-gray-300 rounded-md ease-out duration-500 group ">
-{item.icons}
+        <Link to={item.link} key={item.name} onClick={item.action} className = "w-full h-auto flex items-center gap-x-4 p-3 bg-transparent hover:bg-gray-300 rounded-md ease-out duration-500 group ">
+{item.icons} 
      </Link>  
      )     )
 
