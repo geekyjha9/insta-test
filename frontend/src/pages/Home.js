@@ -7,12 +7,9 @@ import TopNav from "../components/headers/TopNav/TopNav";
 
 export default function Home(){
     return(
-        <div className="home w-full min-h-screen">
-
+       
                 <Feed></Feed>
 
-       
-    </div>
     )
    
 }

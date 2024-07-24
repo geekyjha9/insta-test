@@ -1,16 +1,21 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import ProfilePosts from '../src/components/Profile/ProfilePost.js';
+import ProfilePosts from '../src/components/Profile/ProfilePosts.js';
+import ProfileHeader from '../src/components/Profile/ProfileHeader.js';
 import '@testing-library/jasmine-dom'; // Ensure this is correctly set up
 
 describe('ProfilePosts Component', () => {
-  it('[REQ012]_should_render_the_correct_number_of_posts', () => {
-    render(<ProfilePosts />);
-    const postElements = screen.getAllByRole('img');
-    expect(postElements.length).toBe(3); // Assuming there are 4 posts
+  it('[REQ016]_should_render_username_correctly', () => {
+    render(<ProfileHeader />);
+    const usernameElement = screen.getByText(/username/i);
+    
+    
+    
+    // Ensure the username element is truthy
+    expect(usernameElement.textContent).toBe('username');
   });
 
-  it('[REQ013]_should_render_posts_with_correct_src_and_alt_attributes', () => {
+  it('[REQ017]_should_render_posts_with_correct_src_and_alt_attributes', () => {
     render(<ProfilePosts />);
     const postElements = screen.getAllByRole('img');
 

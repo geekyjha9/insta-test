@@ -1,9 +1,9 @@
-// src/components/Layout.js
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import LargeNav from '../components/headers/LargeNav/LargeNav';
-import MobileNav from '../components/headers/MobileNav/MobileNav';
-import TopNav from '../components/headers/TopNav/TopNav';
+import React from "react";
+import TopNav from "../components/headers/TopNav/TopNav";
+import MobileNav from "../components/headers/MobileNav/MobileNav";
+import LargeNav from "../components/headers/LargeNav/LargeNav";
+import { Outlet } from "react-router-dom";
+
 
 const AppLayout = () => {
     return (
@@ -15,12 +15,11 @@ const AppLayout = () => {
                 </div>
                 <div className="w-full h-auto py-1 px-3 border-t border-t-[#1d1d1d] fixed bottom-0 left-0 lg:hidden md:hidden sm:block z-50 bg-white"><MobileNav></MobileNav></div>
                 <div className="w-full h-auto py-1 px-3 border-b border-b-[#1d1d1d] fixed top-0 left-0 lg:hidden md:hidden sm:block z-50 bg-white"><TopNav></TopNav></div>
-
-                <Outlet />
+               <Outlet></Outlet>
             </div>
 
         </div>
-    );
-};
+    )
+}
 
-export default AppLayout;
+export default AppLayout
