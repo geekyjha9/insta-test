@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import { FiPlus } from 'react-icons/fi';
 
 
-Modal.setAppElement('#root'); // Make sure to set the app element
+
+Modal.setAppElement(document.getElementById('root')); // Make sure to set the app element
 
 const CreatePost = ({ closeModal }) => {
   const [selectedImage, setSelectedImage] = useState(null);
