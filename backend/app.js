@@ -2,7 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const sequelize = require("./config/db");
 const userRoutes = require("./routes/userRoutes")
-const cors = require("cors")
+const cors = require("cors");
+const { isLogin } = require("./middlewares/isLogin");
 
 
 const app = express()
@@ -13,6 +14,9 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 app.use("/api/users",userRoutes)
 
+app.get('/test', isLogin, (req, res) => {
+    res.status(200).send('Success');
+});
 sequelize.sync().then(()=>{
     console.log("Database & tables synced")
 }).catch(err=>{
