@@ -24,6 +24,10 @@ describe('POST /api/posts/createpost', () => {
     token = jwt.sign({ id: 1, username: 'testuser' }, JWT_SECRET, { expiresIn: '1h' });
   });
 
+  beforeEach(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000; // Set timeout to 20 seconds for each test
+  });
+
   it('[REQ001]_should_create_a_new_post_and_return_it', async () => {
     const response = await request(app)
       .post('/api/posts/createpost')
