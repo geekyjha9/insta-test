@@ -1,11 +1,9 @@
-const express = require("express");
-const {isLogin} = require('../middlewares/isLogin')
+const express = require('express');
 const router = express.Router();
-const postController = require("../controllers/postController.js")
+const { createPost, validateCreatePost } = require('../controllers/postController');
+const authorizeUser = require("../middlewares/authorizeUser")
 
+// Create post route with validation and authentication middleware
+router.post('/create', authorizeUser, validateCreatePost, createPost);
 
-
-router.post("/createpost",isLogin,postController.createPost);
-
-
-module.exports = router
+module.exports = router;

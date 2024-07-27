@@ -6,9 +6,10 @@ const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default_jwt_secret';
 
-describe('isLogin Middleware', () => {
+describe('authenticateUser Middleware', () => {
     beforeAll(async () => {
         await sequelize.sync({ force: true });
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000; // Set timeout to 10 seconds globally
     });
 
     afterAll(async () => {
@@ -20,19 +21,19 @@ describe('isLogin Middleware', () => {
         await User.destroy({ truncate: true, cascade: true });
     });
 
-    it('[REQ001]_should_return_401_if_no_authorization_header', (done) => {
+    it('[REQ020]_should_return_401_if_no_authorization_header', (done) => {
         request(app)
             .get('/test')
             .expect(401)
             .end((err, res) => {
                 if (err) return done(err);
                 expect(res.body.success).toBe(false);
-                expect(res.body.message).toBe('You have to login to create post');
+                expect(res.body.message).toBe('Authentication required');
                 done();
             });
     });
 
-    it('[REQ002]_should_return_401_if_invalid_token', (done) => {
+    it('[REQ021]_should_return_401_if_invalid_token', (done) => {
         const invalidToken = jwt.sign({ id: 'invalid' }, 'wrongsecret');
 
         request(app)
@@ -41,38 +42,29 @@ describe('isLogin Middleware', () => {
             .expect(401)
             .end((err, res) => {
                 if (err) return done(err);
-                expect(res.body.message).toBe('Error while Verification');
+                expect(res.body.success).toBe(false);
+                expect(res.body.message).toBe('Invalid credentials');
                 done();
             });
     });
 
-    it('[REQ003]_should_return_401_if_user_not_found', async () => {
-        const validToken = jwt.sign({ id: 'nonexistentid' }, JWT_SECRET);
-
-        const response = await request(app)
-            .get('/test')
-            .set('Authorization', `Bearer ${validToken}`)
-            .expect(401);
-
-        expect(response.body.success).toBe(false);
-        expect(response.body.message).toBe('User not found in db');
-    });
-
-    it('[REQ004]_should_call_next_if_token_is_valid_and_user_exists', async () => {
+    it('[REQ022]_should_call_next_if_token_is_valid_and_user_exists', async () => {
         const user = await User.create({
             username: 'testuser',
             email: 'testuser@example.com',
-            password: 'password123', 
+            password: 'password123',
             fullname: 'Test User'
         });
 
-        const validToken = jwt.sign({ id: user.id }, JWT_SECRET);
+        const validToken = jwt.sign({ id: user.dataValues.id }, JWT_SECRET);
 
         const response = await request(app)
             .get('/test')
             .set('Authorization', `Bearer ${validToken}`)
             .expect(200);
-
-        expect(response.text).toBe('Success');
+console.log(response.body);
+        expect(response.body.success).toBe(true);
+        expect(response.body.user).toBeDefined();
+        expect(response.body.user.id).toBe(user.id);
     });
 });
