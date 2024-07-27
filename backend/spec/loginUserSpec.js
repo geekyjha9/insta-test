@@ -1,22 +1,14 @@
+// spec/testFile2.spec.js
 const request = require('supertest');
-const sequelize = require('../config/db');
 const User = require('../models/User');
-const { app, server } = require('../app');
+const { app } = require('../app');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default_jwt_secret'; // Use a default for testing
+require('./helpers/dbSetup'); // Import centralized setup
 
 describe('User API - Login', () => {
-    beforeAll(async () => {
-        await sequelize.sync({ force: true }); // Ensure clean database
-    });
-
-    afterAll(async () => {
-        await sequelize.close();
-        server.close();
-    });
-
     beforeEach(async () => {
         await User.destroy({ truncate: true, cascade: true }); // Clear all users before each test
     });
@@ -87,7 +79,5 @@ describe('User API - Login', () => {
                 error: 'User Not Found with Given email'
             });
         });
-
-
     });
 });

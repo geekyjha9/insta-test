@@ -1,28 +1,23 @@
+// spec/testFile3.spec.js
 const request = require('supertest');
-const sequelize = require('../config/db');
-const { app, server } = require('../app');
 const User = require('../models/User');
 const Post = require('../models/Post');
+const { app } = require('../app');
 const jwt = require('jsonwebtoken');
+require('./helpers/dbSetup'); // Import centralized setup
 
 describe('Post API', () => {
     let user;
     let token;
 
     beforeAll(async () => {
-        await sequelize.sync({ force: true }); // Ensure clean database
         user = await User.create({
-            username: 'testuser',
-            email: 'testuser@example.com',
+            username: 'testuser' + Date.now(), // Ensure unique username
+            email: 'testuser' + Date.now() + '@example.com', // Ensure unique email
             password: 'password123',
             fullname: 'Test User'
         });
-        token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    });
-
-    afterAll(async () => {
-        await sequelize.close();
-        server.close();
+        token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'default_jwt_secret', { expiresIn: '1h' });
     });
 
     beforeEach(async () => {

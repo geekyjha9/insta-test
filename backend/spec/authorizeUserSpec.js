@@ -1,22 +1,13 @@
+// spec/testFile4.spec.js
 const request = require('supertest');
-const sequelize = require('../config/db');
 const User = require('../models/User');
-const { app, server } = require('../app');
+const { app } = require('../app');
 const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default_jwt_secret';
+require('./helpers/dbSetup'); // Import centralized setup
 
 describe('authenticateUser Middleware', () => {
-    beforeAll(async () => {
-        await sequelize.sync({ force: true });
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000; // Set timeout to 10 seconds globally
-    });
-
-    afterAll(async () => {
-        await sequelize.close();
-        server.close();
-    });
-
     beforeEach(async () => {
         await User.destroy({ truncate: true, cascade: true });
     });
@@ -62,7 +53,7 @@ describe('authenticateUser Middleware', () => {
             .get('/test')
             .set('Authorization', `Bearer ${validToken}`)
             .expect(200);
-console.log(response.body);
+
         expect(response.body.success).toBe(true);
         expect(response.body.user).toBeDefined();
         expect(response.body.user.id).toBe(user.id);

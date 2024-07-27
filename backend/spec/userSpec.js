@@ -1,18 +1,10 @@
+// spec/testFile1.spec.js
 const request = require('supertest');
-const sequelize = require('../config/db');
 const User = require('../models/User');
-const { app, server } = require('../app');
+const { app } = require('../app');
+require('./helpers/dbSetup'); // Import centralized setup
 
 describe('User API', () => {
-  beforeAll(async () => {
-    await sequelize.sync({ force: true }); // Ensure clean database
-  });
-
-  afterAll(async () => {
-    await sequelize.close();
-    server.close();
-  });
-
   beforeEach(async () => {
     await User.destroy({ truncate: true, cascade: true }); // Clear all users before each test
   });
