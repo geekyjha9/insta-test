@@ -40,7 +40,8 @@ export default function SignIn(){
              
                 setEmail("")
                 setPassword("")
-             
+                
+                localStorage.setItem("jwt",data.token);
                 console.log(data)
             } else {
                 toast.error(data.error)

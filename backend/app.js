@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const sequelize = require("./config/db");
 const userRoutes = require("./routes/userRoutes")
 const postRoutes = require("./routes/postRoutes")
+const profileRoutes = require("./routes/profileRoutes")
 const cors = require("cors")
 const authorizeUser = require("./middlewares/authorizeUser")
 
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/api/users", userRoutes);
 app.use("/api/posts",postRoutes)
+app.use("/api/user",profileRoutes)
 
 // Test API
 app.get("/test", authorizeUser, (req, res) => {

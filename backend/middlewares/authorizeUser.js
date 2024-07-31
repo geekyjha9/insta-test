@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 require('dotenv').config()
-const JWT_SECRET = process.env.JWT_SECRET
+const JWT_SECRET = process.env.JWT_SECRET 
 
 
 const authorizeUser = async (req, res, next) => {
@@ -10,7 +10,7 @@ const authorizeUser = async (req, res, next) => {
         return res.status(401).json({ success: false, message: "Authentication required" })
     }
     const token = authorization.replace('Bearer ', '');
-console.log(token);
+    console.log(token);
     try {
         const payload = jwt.verify(token, JWT_SECRET)
         const user = await User.findByPk(payload.id)
