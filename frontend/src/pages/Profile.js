@@ -1,26 +1,3 @@
-// import React, { useEffect } from "react";
-// import ProfileBio from "../components/Profile/ProfileBio";
-// import ProfileHeader from "../components/Profile/ProfileHeader";
-// import ProfilePosts from "../components/Profile/ProfilePosts";
-// const API_URL = window.location.origin.replace("3000", "5000")
-// const Profile = async()=>{
-//     useEffect({
-//       const response = await  fetch(`${API_URL}/api/profile/pots`,{
-
-//         })
-//     },[])
-//     return (
-//         <div className="max-w-4xl w-full lg:w-[70%] h-auto mx-auto mt-9 mb-9 pt-9 ">
-//             <ProfileHeader></ProfileHeader>
-//             <ProfileBio></ProfileBio>
-//             <ProfilePosts></ProfilePosts>
-//         </div>
-//     )
-// }
-
-// export default Profile
-
-
 import React, { useEffect, useState } from "react";
 import ProfileBio from "../components/Profile/ProfileBio";
 import ProfileHeader from "../components/Profile/ProfileHeader";

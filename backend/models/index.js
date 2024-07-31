@@ -1,14 +1,14 @@
-const sequelize = require('../config/db');
-const User = require('./User');
-const Post = require('./Post');
+const sequelize = require("../config/db");
+const User = require("./User.js");
+const Post = require("./Post.js");
 
-// Setup associations
-User.hasMany(Post, { foreignKey: 'userId', as: 'posts' });
-Post.belongsTo(User, { foreignKey: 'userId', as: 'postedBy' });
 
-// Export models and sequelize instance
+User.hasMany(Post, { foreignKey: "userId", as: "posts" });
+Post.belongsTo(User, { foreignKey: "userId", as: "postedBy" })
+
+
 module.exports = {
-  sequelize,
-  User,
-  Post,
-};
+    sequelize,
+    Post,
+    User
+}

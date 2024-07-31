@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import MobileNav from '../src/components/headers/MobileNav/MobileNav';
 
 describe('MobileNav component tests', () => {
-    it('[REQ012]_renders_all_navigation_links_correctly', () => {
+    it('[REQ013]_renders_all_navigation_links_correctly', () => {
         render(
             <BrowserRouter>
                 <MobileNav />

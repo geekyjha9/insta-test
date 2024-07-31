@@ -4,7 +4,7 @@ import '@testing-library/jasmine-dom';
 import TopNav from '../src/components/headers/TopNav/TopNav';
 
 describe('TopNav Component', () => {
-  it('[REQ001]_renders_search_input_and_button_correctly', () => {
+  it('[REQ0015]_renders_search_input_and_button_correctly', () => {
     render(<TopNav />);
 
     // Check if the search input is rendered

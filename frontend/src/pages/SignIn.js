@@ -37,11 +37,10 @@ export default function SignIn(){
             const data = await response.json();
             if (response.ok) {
                 toast.success(data.message);
-             
+                localStorage.setItem("jwt",data.token);
                 setEmail("")
                 setPassword("")
-                
-                localStorage.setItem("jwt",data.token);
+             
                 console.log(data)
             } else {
                 toast.error(data.error)

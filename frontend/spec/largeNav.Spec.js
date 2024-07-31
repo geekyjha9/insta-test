@@ -6,7 +6,7 @@ import LargeNav from '../src/components/headers/LargeNav/LargeNav';
 import InstagramLogo from '../src/img/logo.png';
 
 describe('LargeNav component tests', () => {
-    it('[REQ011]_renders_all_navigation_links_correctly', () => {
+    it('[REQ012]_renders_all_navigation_links_correctly', () => {
         render(
             <BrowserRouter>
                 <LargeNav />

@@ -1,7 +1,9 @@
 import React from "react";
+import { formatDistanceToNow} from "date-fns"
 import { FaHeart, FaRegComment, FaRegPaperPlane, FaRegBookmark, FaRegSmile } from "react-icons/fa";
 
 const FeedCard = ({ feed }) => {
+    const timeAgo =  formatDistanceToNow(new Date(feed.time), {addSuffix:true})
     return (
         <div className="w-full mx-auto mb-6 bg-white p-4 rounded-lg">
             {/* Profile Picture , Username , Time  */}
@@ -15,7 +17,7 @@ const FeedCard = ({ feed }) => {
                     <div className="flex items-center gap-x-2">
                         <p className="text-black text-sm font-medium">{feed.username}</p>
                         <div className="w-1 h-1 bg-gray-500 rounded-full"></div>
-                        <p className="text-black text-sm">{feed.time}</p>
+                        <p className="text-black text-sm">{timeAgo}</p>
                     </div>
                 </div>
             </div>

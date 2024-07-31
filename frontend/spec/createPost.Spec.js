@@ -29,7 +29,7 @@ describe('CreatePost component tests', () => {
     }
   });
 
-  it('[REQ001]_should_render_the_CreatePost_component_correctly', () => {
+  it('[REQ018]_should_render_the_CreatePost_component_correctly', () => {
     const { getByPlaceholderText, getByText } = container;
 
     expect(getByText('Create Post')).toBeTruthy();
@@ -37,7 +37,7 @@ describe('CreatePost component tests', () => {
     expect(getByPlaceholderText('Add hashtags')).toBeTruthy();
   });
 
-  it('[REQ002]_should_call_handleShare_and_closeModal_when_the_Share_button_is_clicked', () => {
+  it('[REQ019]_should_call_handleShare_and_closeModal_when_the_Share_button_is_clicked', () => {
     const { getByText, getByPlaceholderText } = container;
 
     const captionInput = getByPlaceholderText('Add a caption');
