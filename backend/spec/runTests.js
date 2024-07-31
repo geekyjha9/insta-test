@@ -16,7 +16,8 @@ require('./userSpec.js'); // replace with your actual test file names
 require('./loginUserSpec.js');
 require('./createPostSpec.js');
 require('./authorizeUserSpec.js');
-require('./getAllPostSpec.js')
+require('./getAllPostSpec.js');
+require("./getProfileSpec.js")
 
 // Run the tests
 jasmine.execute();

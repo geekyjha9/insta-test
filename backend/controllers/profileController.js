@@ -3,33 +3,36 @@ const Post = require("../models/Post");
 
 const getProfile = async (req, res) => {
   try {
-    const { id, fullname , username } = req.user;
+    if (!req.user) {
+      return res.status(400).json({
+        success: false,
+        message: "User information is missing or incomplete.",
+      });
+    }
+    const { id, fullname, username } = req.user;
+
+
 
     // Find posts by user ID
     const posts = await Post.findAll({
       where: { userId: id },
-      attributes: ['image'], // Only select the image field
+      attributes: ['image', 'id'], // Only select the image field
     });
 
-    // Extract images from posts
-    const images = posts.map(post => post.image);
+
 
     res.status(200).json({
       success: true,
-      user: {
-        id,
-        fullname,
-        username,
-      },
-      images,
+      user: { id, username, fullname },
+      posts
     });
   } catch (err) {
     console.error('Error fetching profile data:', err);
     res.status(500).json({
       success: false,
-      message: "Internal server error. ",
+      message: "Internal server error.",
     });
   }
 };
 
-module.exports = {getProfile};
+module.exports = { getProfile };

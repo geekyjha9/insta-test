@@ -6,9 +6,8 @@ import ProfilePosts from "../components/Profile/ProfilePosts";
 const API_URL = window.location.origin.replace("3000", "5000");
 
 const Profile = () => {
-  const [profileData, setProfileData] = useState(null);
- 
-  const [error, setError] = useState(null);
+  const [profileData, setProfileData] = useState();
+
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -26,32 +25,30 @@ const Profile = () => {
         }
 
         const data = await response.json();
+        console.log(data);
         setProfileData(data);
+
       } catch (err) {
-        setError(err.message);
-      } finally {
-        
+        console.log(err);
       }
     };
 
     fetchProfileData();
   }, []);
 
-  
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
-  if (!profileData) {
-    return <div>No profile data available.</div>;
-  }
 
   return (
     <div className="max-w-4xl w-full lg:w-[70%] h-auto mx-auto mt-9 mb-9 pt-9">
-      <ProfileHeader username={profileData.user.username} size = {profileData.images.length} />
-      <ProfileBio user={profileData.user} />
-      <ProfilePosts images={profileData.images} />
+      {profileData && (
+        <>
+          <ProfileHeader username={profileData.user.username} size={profileData.posts.length} />
+          <ProfileBio user={profileData.user} />
+          <ProfilePosts posts={profileData.posts} />
+        </>
+      )}
+
     </div>
   );
 };
