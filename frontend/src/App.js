@@ -5,25 +5,27 @@ import SignIn from "./pages/SignIn";
 import Profile from "./pages/Profile";
 import AppLayout from "./pages/AppLayout";
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-
+import {Context} from './context/Context'
+import { useState } from "react";
 
 
 function App() {
-
+  const [login,setlogin] = useState(false);
   return (
     <BrowserRouter>
-
       <div className="App">
+ <Context.Provider value={{login,setlogin}}>
         <Routes>
 
           <Route path="/" element={<AppLayout />}>
-            <Route path="/" element={<Home />}></Route>
-            <Route path="/profile" element={<Profile />}></Route>
+            <Route path="/" element={ <Home />}></Route>
+            <Route path="/profile" element={ <Profile />}></Route>
           </Route>
           <Route path="/signup" element={<SignUp />}></Route>
           <Route path="/signin" element={<SignIn />}></Route>
         </Routes>
 
+        </Context.Provider>
       </div>
     </BrowserRouter>
 

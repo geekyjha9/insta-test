@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import logo from "../img/logo.png"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Context } from "../context/Context";
 
 const API_URL = window.location.origin.replace("3000", "5000")
 
 export default function SignIn() {
-
+const {setlogin} = useContext(Context);
+const navigate = useNavigate();
     const [email, setEmail] = useState("")
 
     const [password, setPassword] = useState("")
@@ -43,7 +45,8 @@ export default function SignIn() {
 
                 setEmail("")
                 setPassword("")
-
+                setlogin(true);
+                navigate("/");
                 console.log(data)
             } else {
                 toast.error(data.error)

@@ -9,6 +9,8 @@ const CreatePost = ({ closeModal }) => {
     const [selectedImage, setSelectedImage] = useState(null)
     const [caption, setCaption] = useState('')
     const [hashtag, setHashtag] = useState('')
+    
+    const API_URL = window.location.origin.replace("3000", "5000");
 
     const handleImageUpload = (e) => {
         if (e.target.files && e.target.files[0]) {
@@ -16,14 +18,38 @@ const CreatePost = ({ closeModal }) => {
         }
     }
 
-    const handleShare = () => {
-        console.log("Post Shared",
-            {
+    const handleShare = async () => {
+        if (selectedImage && caption && hashtag) {
+          try {
+            const response = await fetch(`${API_URL}/api/posts/create`, {
+              method: 'POST',
+              headers: {
+                'Authorization':"Bearer " + localStorage.getItem("token"),
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
                 image: selectedImage,
-                caption, hashtag
-            })
-        closeModal()
-    }
+                caption,
+                hashtags: hashtag
+              })
+            });
+    
+            if (!response.ok) {
+              throw new Error(`Error: ${response.statusText}`);
+            }
+    
+            const result = await response.json();
+            console.log("Post created successfully: ", result);
+    
+            // Close the modal after successful post creation
+            closeModal();
+          } catch (error) {
+            console.error("Error creating post: ", error);
+          }
+        } else {
+          console.warn("Please provide all the required fields.");
+        }
+      };
 
     const handleUpload = async (image) => {
         if (image) {

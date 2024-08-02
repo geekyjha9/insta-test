@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import FeedCard from "./FeedCard/FeedCard";
+import { Context } from "../../context/Context";
+import { useNavigate } from "react-router-dom";
 
 const Feed = () => {
+    const {login} = useContext(Context)
+    const navigate = useNavigate();
     const API_URL = window.location.origin.replace("3000", "5000")
     const [feeds, setFeeds] = useState([])
     useEffect(() => {
+        if(!login) navigate('/signup')
         const fetchFeeds = async () => {
             try {
                 const response = await fetch(`${API_URL}/api/posts/getAll`);
