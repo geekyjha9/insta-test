@@ -7,10 +7,12 @@ import AppLayout from "./pages/AppLayout";
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import {Context} from './context/Context'
 import { useState } from "react";
+import LogoutModal from "./pages/LogoutModal";
 
 
 function App() {
   const [login,setlogin] = useState(false);
+  const[modal,setmodal] = useState(false);
   return (
     <BrowserRouter>
       <div className="App">
@@ -24,7 +26,7 @@ function App() {
           <Route path="/signup" element={<SignUp />}></Route>
           <Route path="/signin" element={<SignIn />}></Route>
         </Routes>
-
+        {modal &&<LogoutModal></LogoutModal>}
         </Context.Provider>
       </div>
     </BrowserRouter>
