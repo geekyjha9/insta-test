@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
-import { supabase } from "../../services/supabaseClient";
-// import { supabase } from "../../services/supabaseClientMock";
+// import { supabase } from "../../services/supabaseClient";
+import { supabase } from "../../services/supabaseClientMock";
 
 Modal.setAppElement(document.getElementById("root"))
 
-const CreatePost = ({ closeModal }) => {
+const CreatePost = ({ closeModal,onNewPost }) => {
+    const API_URL = window.location.origin.replace("3000", "5000")
     const [selectedImage, setSelectedImage] = useState(null)
     const [caption, setCaption] = useState('')
     const [hashtag, setHashtag] = useState('')
-    
-    const API_URL = window.location.origin.replace("3000", "5000");
 
     const handleImageUpload = (e) => {
         if (e.target.files && e.target.files[0]) {
@@ -20,36 +19,34 @@ const CreatePost = ({ closeModal }) => {
 
     const handleShare = async () => {
         if (selectedImage && caption && hashtag) {
-          try {
-            const response = await fetch(`${API_URL}/api/posts/create`, {
-              method: 'POST',
-              headers: {
-                'Authorization':"Bearer " + localStorage.getItem("token"),
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                image: selectedImage,
-                caption,
-                hashtags: hashtag
-              })
-            });
-    
-            if (!response.ok) {
-              throw new Error(`Error: ${response.statusText}`);
+            try {
+                const response = await fetch(`${API_URL}/api/posts/create`, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        image: selectedImage,
+                        caption,
+                        hashtags: hashtag
+                    })
+                })
+
+                if (!response.ok) {
+                    throw new Error(response.statusText)
+                }
+
+                await response.json()
+                closeModal();
+                onNewPost();
+            } catch (error) {
+                console.error(error)
             }
-    
-            const result = await response.json();
-            console.log("Post created successfully: ", result);
-    
-            // Close the modal after successful post creation
-            closeModal();
-          } catch (error) {
-            console.error("Error creating post: ", error);
-          }
         } else {
-          console.warn("Please provide all the required fields.");
+            console.warn("Please provide all the fields")
         }
-      };
+    }
 
     const handleUpload = async (image) => {
         if (image) {
@@ -65,9 +62,9 @@ const CreatePost = ({ closeModal }) => {
                 .from('images')
                 .getPublicUrl(data.path);
 
-                
-                setSelectedImage(urlInfo.data.publicUrl)
-                console.log("File Link Retirieved Successfull : " , urlInfo.data.publicUrl)
+
+            setSelectedImage(urlInfo.data.publicUrl)
+            console.log("File Link Retirieved Successfull : ", urlInfo.data.publicUrl)
         }
 
 

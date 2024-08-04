@@ -1,15 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import FeedCard from "./FeedCard/FeedCard";
-import { Context } from "../../context/Context";
-import { useNavigate } from "react-router-dom";
 
-const Feed = () => {
-    const {login} = useContext(Context)
-    const navigate = useNavigate();
+const Feed = ({newPost}) => {
     const API_URL = window.location.origin.replace("3000", "5000")
     const [feeds, setFeeds] = useState([])
     useEffect(() => {
-        if(!login) navigate('/signup')
         const fetchFeeds = async () => {
             try {
                 const response = await fetch(`${API_URL}/api/posts/getAll`);
@@ -25,7 +20,7 @@ const Feed = () => {
             }
         }
         fetchFeeds()
-    }, [])
+    }, [newPost])
 
     return (
         <div className="w-full min-h-screen lg:py-7 sm:py-3 flex flex-col lg:flex-row items-start gap-x-20 mt-5 pt-5 mb-5">

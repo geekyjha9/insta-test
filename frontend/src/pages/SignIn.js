@@ -1,24 +1,23 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import logo from "../img/logo.png"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link, useNavigate } from "react-router-dom";
-import { Context } from "../context/Context";
+import { Link ,useNavigate} from "react-router-dom";
 
 const API_URL = window.location.origin.replace("3000", "5000")
 
 export default function SignIn() {
-const {setlogin} = useContext(Context);
-const navigate = useNavigate();
+
     const [email, setEmail] = useState("")
 
     const [password, setPassword] = useState("")
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
         signin()
-
     }
 
     const signin = async () => {
@@ -40,13 +39,13 @@ const navigate = useNavigate();
             if (response.ok) {
                 toast.success(data.message);
                 if (data.token) {
-                    localStorage.setItem("token", data.token)
+                    login(data.token);
+                    navigate("/");
                 }
 
                 setEmail("")
                 setPassword("")
-                setlogin(true);
-                navigate("/");
+
                 console.log(data)
             } else {
                 toast.error(data.error)

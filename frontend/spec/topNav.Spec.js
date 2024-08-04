@@ -5,17 +5,19 @@ import TopNav from '../src/components/headers/TopNav/TopNav';
 
 describe('TopNav Component', () => {
   it('[REQ0015]_renders_search_input_and_button_correctly', () => {
-    render(<TopNav />);
+    const { getByTestId } = render(<TopNav />);
+
+
 
     // Check if the search input is rendered
     const searchInput = screen.getByPlaceholderText(/Search/i);
     expect(searchInput).toBeTruthy();
-    
+
     // Check if the search button with icon is rendered
-    const searchButton = screen.getByRole('button');
+    const searchButton = screen.getByTestId('search button');
     expect(searchButton).toBeTruthy();
 
-   
-   
+
+
   });
 });

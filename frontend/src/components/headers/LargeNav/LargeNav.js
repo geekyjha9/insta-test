@@ -1,17 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaHome, FaSearch, FaUserFriends, FaUserPlus, FaPlusSquare } from "react-icons/fa"
+import { FaHome, FaSearch, FaUserFriends, FaUserPlus, FaPlusSquare,FaSignOutAlt } from "react-icons/fa"
 import logo from "../../../img/logo.png";
 import CreatePost from "../../CreatePost/CreatePost";
-const LargeNav = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const openModal = () => {
-        setIsModalOpen(true)
-    }
-    const closeModal = () => {
-        setIsModalOpen(false)
-    }
+const LargeNav = ({openModal,openLogOutModal}) => {
+   
 
     const SidebarItems = [
         {
@@ -61,9 +54,13 @@ const LargeNav = () => {
                 ))
 
                 }
+                    <div className="w-full h-auto flex items-center gap-x-4 p-3 bg-red-500 text-white hover:bg-red-600 rounded-md ease-out duration-500 group cursor-pointer" onClick={openLogOutModal}>
+                <FaSignOutAlt className="text-2xl"  />
+                    <p className="text-lg lg:block md:hidden sm:hidden hidden ">Log Out</p>
+                </div>
             </div>
         </div>
-        {isModalOpen && <CreatePost closeModal={closeModal}/>}
+        
         </>
        
     )
