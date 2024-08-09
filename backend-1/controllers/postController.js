@@ -1,4 +1,4 @@
-const { Post, User, Like } = require("../models");
+const { Post, User } = require("../models");
 const { body, validationResult } = require("express-validator");
 
 const validateCreatePost = [
@@ -54,73 +54,12 @@ const getAllPost = async (req, res) => {
     }
 }
 
-// const likePost = async (req, res) => {
-//     const { postId } = req.body;
-//     const userId = req.user.id;
-
-//     try {
-//         // Find the post and update it by adding the user's ID to the likes array
-//         const post = await Post.findByPk(postId);
-
-//         if (!post) {
-//             return res.status(404).json({ message: "Post not found" });
-//         }
-
-//         // Check if the user has already liked the post
-//         if (post.likes.includes(userId)) {
-//             return res.status(400).json({ message: "User already liked this post" });
-//         }
-
-//         // Add the user ID to the likes array
-//         post.likes.push(userId);
-//         await post.save();
-
-//         // Return the updated post
-//         res.status(200).json(post);
-
-//     } catch (error) {
-//         console.error('Error liking post:', error);
-//         res.status(500).json({ message: "Internal server error" });
-//     }
-// }
-
-// const unlikePost = async (req, res) => {
-//     const { postId } = req.body;
-//     const userId = req.user.id;
-
-//     try {
-//         // Find the post and update it by removing the user's ID from the likes array
-//         const post = await Post.findByPk(postId);
-
-//         if (!post) {
-//             return res.status(404).json({ message: "Post not found" });
-//         }
-
-//         // Check if the user has already liked the post
-//         if (!post.likes.includes(userId)) {
-//             return res.status(400).json({ message: "User has not liked this post" });
-//         }
-
-//         // Remove the user ID from the likes array
-//         post.likes = post.likes.filter(id => id !== userId);
-//         await post.save();
-
-//         // Return the updated post
-//         res.status(200).json(post);
-
-//     } catch (error) {
-//         console.error('Error unliking post:', error);
-//         res.status(500).json({ message: "Internal server error" });
-//     }
-// }
-
-
 const likePost = async (req, res) => {
     const { postId } = req.body;
     const userId = req.user.id;
 
     try {
-        // Find the post
+        // Find the post and update it by adding the user's ID to the likes array
         const post = await Post.findByPk(postId);
 
         if (!post) {
@@ -128,16 +67,16 @@ const likePost = async (req, res) => {
         }
 
         // Check if the user has already liked the post
-        const existingLike = await Like.findOne({ where: { postId, userId } });
-
-        if (existingLike) {
+        if (post.likes.includes(userId)) {
             return res.status(400).json({ message: "User already liked this post" });
         }
 
-        // Create a new like
-        await Like.create({ postId, userId });
+        // Add the user ID to the likes array
+        post.likes.push(userId);
+        await post.save();
 
-        res.status(200).json({ message: "Post liked successfully" });
+        // Return the updated post
+        res.status(200).json(post);
 
     } catch (error) {
         console.error('Error liking post:', error);
@@ -145,29 +84,30 @@ const likePost = async (req, res) => {
     }
 }
 
+
 const unlikePost = async (req, res) => {
     const { postId } = req.body;
     const userId = req.user.id;
 
     try {
-        // Find the post
+        // Find the post and update it by removing the user's ID from the likes array
         const post = await Post.findByPk(postId);
 
         if (!post) {
             return res.status(404).json({ message: "Post not found" });
         }
 
-        // Check if the user has liked the post
-        const existingLike = await Like.findOne({ where: { postId, userId } });
-
-        if (!existingLike) {
+        // Check if the user has already liked the post
+        if (!post.likes.includes(userId)) {
             return res.status(400).json({ message: "User has not liked this post" });
         }
 
-        // Remove the like
-        await existingLike.destroy();
+        // Remove the user ID from the likes array
+        post.likes = post.likes.filter(id => id !== userId);
+        await post.save();
 
-        res.status(200).json({ message: "Post unliked successfully" });
+        // Return the updated post
+        res.status(200).json(post);
 
     } catch (error) {
         console.error('Error unliking post:', error);

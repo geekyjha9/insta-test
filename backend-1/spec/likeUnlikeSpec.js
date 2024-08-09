@@ -4,7 +4,7 @@ const User = require('../models/User');
 const Post = require('../models/Post');
 const { app } = require('../app');
 const jwt = require('jsonwebtoken');
-require('./helpers/dbSetup');
+require('./helpers/dbSetup'); // Import centralized setup
 
 describe('Like/Unlike API', () => {
     let user;
@@ -40,15 +40,11 @@ describe('Like/Unlike API', () => {
                 .send({ postId: post.id });
 
             expect(response.status).toBe(200);
-            expect(response.body).toHaveProperty('likes');
-            expect(response.body.likes.some(like => like.userId === user.id)).toBe(true);
+            expect(response.body.likes).toContain(user.id);
         });
 
         it('[REQ027]_like_post_already_liked', async () => {
-            await request(app)
-                .put('/api/posts/likes')
-                .set('Authorization', `Bearer ${token}`)
-                .send({ postId: post.id });
+            await post.update({ likes: [user.id] });
 
             const response = await request(app)
                 .put('/api/posts/likes')
@@ -85,10 +81,7 @@ describe('Like/Unlike API', () => {
 
     describe('PUT /api/posts/unlikes', () => {
         it('[REQ030]_unlike_post_successfully', async () => {
-            await request(app)
-                .put('/api/posts/likes')
-                .set('Authorization', `Bearer ${token}`)
-                .send({ postId: post.id });
+            await post.update({ likes: [user.id] });
 
             const response = await request(app)
                 .put('/api/posts/unlikes')
@@ -96,8 +89,7 @@ describe('Like/Unlike API', () => {
                 .send({ postId: post.id });
 
             expect(response.status).toBe(200);
-            expect(response.body).toHaveProperty('likes');
-            expect(response.body.likes.some(like => like.userId === user.id)).toBe(false);
+            expect(response.body.likes).not.toContain(user.id);
         });
 
         it('[REQ031]_unlike_post_not_liked_yet', async () => {
