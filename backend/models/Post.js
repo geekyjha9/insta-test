@@ -22,8 +22,15 @@ const Post = sequelize.define("Post",{
             model:User,
             key:"id"
         }
+    },
+    likes: {
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
+        allowNull: true,
+        defaultValue: [{
+            model:User,
+            key:"id"
+        }]
     }
-
 },{
     timestamps:true
 })
