@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import FeedCard from "./FeedCard/FeedCard";
 
 const Feed = () => {
-    const API_URL = window.location.origin.replace("3000", "5000");
+    const API_URL = window.location.origin.replace("3000", "4000");
     const [feeds, setFeeds] = useState([]);
+    const [currentUserId, setCurrentUserId] = useState(null);
 
     useEffect(() => {
         const fetchFeeds = async () => {
@@ -19,13 +20,23 @@ const Feed = () => {
                 console.error("Error fetching feeds:", error);
             }
         };
+
+
+        const fetchUserId = () => {
+            const userId = localStorage.getItem("id");
+
+            console.log("userId", userId)
+            setCurrentUserId(userId);
+        };
+
         fetchFeeds();
+        fetchUserId();
     }, [API_URL]);
 
     const likePost = async (id) => {
 
         console.log("id", id);
-        console.log("token", localStorage.getItem("token"));
+        console.log("token", "Bearer " + localStorage.getItem("token"));
         console.log("api", `${API_URL}/api/posts/like`);
 
         try {
@@ -41,7 +52,12 @@ const Feed = () => {
 
             const newData = feeds.map((post) => (post.id === result.id ? result : post));
             setFeeds(newData);
+
+        console.log("feeds", feeds);
+    
             console.log("result", result);
+
+            
         } catch (error) {
             console.error("Error liking post:", error);
         }
@@ -61,6 +77,8 @@ const Feed = () => {
             const newData = feeds.map((post) => (post.id === result.id ? result : post));
             setFeeds(newData);
             console.log(result);
+
+            console.log("feeds", feeds);
         } catch (error) {
             console.error("Error unliking post:", error);
         }
@@ -72,7 +90,7 @@ const Feed = () => {
                 <div className="w-full h-auto flex items-center justify-center mt-6 mb-6">
                     <div className="w-full lg:w-[73%] md:w-[73%] sm:w-[80%]">
                         {feeds && feeds.map((feed) => (
-                            <FeedCard key={feed.id} feed={feed} onLike={likePost} onUnlike={unlikePost}></FeedCard>
+                            <FeedCard key={feed.id} feed={feed} onLike={likePost} onUnlike={unlikePost} currentUserId={currentUserId}></FeedCard>
                         ))}
                     </div>
                 </div>
@@ -112,7 +130,7 @@ export default Feed;
 // import FeedCard from "./FeedCard/FeedCard";
 
 // const Feed = () => {
-//     const API_URL = window.location.origin.replace("3000", "5000")
+//     const API_URL = window.location.origin.replace("3000", "4000")
 //     const [feeds, setFeeds] = useState([])
 //     useEffect(() => {
 //         const fetchFeeds = async () => {
