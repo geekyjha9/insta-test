@@ -3,6 +3,7 @@ const sequelize = require("../config/db");
 const User = require("./User");
 const Post = require("./Post");
 
+
 const Like = sequelize.define("Like", {
     userId: {
         type: DataTypes.INTEGER,
@@ -17,9 +18,9 @@ const Like = sequelize.define("Like", {
         allowNull: false,
         references: {
             model: Post,
-            key: 'id'
+            key: "id"
         }
     }
-});
+})
 
-module.exports = Like;
+module.exports = Like

@@ -23,6 +23,7 @@ const Post = sequelize.define("Post",{
             key:"id"
         }
     }
+
 },{
     timestamps:true
 })

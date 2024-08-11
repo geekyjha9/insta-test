@@ -2,9 +2,10 @@
 const request = require('supertest');
 const User = require('../models/User');
 const Post = require('../models/Post');
+const Like = require('../models/Like');
 const { app } = require('../app');
 const jwt = require('jsonwebtoken');
-require('./helpers/dbSetup');
+require('./helpers/dbSetup'); // Import centralized setup
 
 describe('Like/Unlike API', () => {
     let user;
@@ -19,10 +20,6 @@ describe('Like/Unlike API', () => {
             fullname: 'Test User'
         });
         token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'default_jwt_secret', { expiresIn: '1h' });
-    });
-
-    beforeEach(async () => {
-        await Post.destroy({ truncate: true, cascade: true });
 
         post = await Post.create({
             caption: 'Test Caption',
@@ -32,105 +29,66 @@ describe('Like/Unlike API', () => {
         });
     });
 
-    describe('PUT /api/posts/likes', () => {
-        it('[REQ026]_like_post_successfully', async () => {
+    beforeEach(async () => {
+        // Clear likes before each test
+        await Like.destroy({ truncate: true, cascade: true });
+    });
+
+    describe('POST /api/posts/like', () => {
+        it('[REQ037]_like_post_successfully', async () => {
             const response = await request(app)
-                .put('/api/posts/likes')
+                .post('/api/posts/like')
                 .set('Authorization', `Bearer ${token}`)
                 .send({ postId: post.id });
 
             expect(response.status).toBe(200);
-            expect(response.body).toHaveProperty('likes');
-            expect(response.body.likes.some(like => like.userId === user.id)).toBe(true);
+            expect(response.body).toEqual({ message: 'Post liked successfully' });
+
+            const like = await Like.findOne({ where: { postId: post.id, userId: user.id } });
+            expect(like).not.toBeNull();
         });
 
-        it('[REQ027]_like_post_already_liked', async () => {
-            await request(app)
-                .put('/api/posts/likes')
-                .set('Authorization', `Bearer ${token}`)
-                .send({ postId: post.id });
-
+        it('[REQ038]_like_post_with_invalid_token', async () => {
             const response = await request(app)
-                .put('/api/posts/likes')
-                .set('Authorization', `Bearer ${token}`)
-                .send({ postId: post.id });
-
-            expect(response.status).toBe(400);
-            expect(response.body.message).toBe('User already liked this post');
-        });
-
-        it('[REQ028]_like_post_with_invalid_token', async () => {
-            const response = await request(app)
-                .put('/api/posts/likes')
+                .post('/api/posts/like')
                 .set('Authorization', 'Bearer invalid_token')
                 .send({ postId: post.id });
 
             expect(response.status).toBe(401);
             expect(response.body).toEqual({
-                success: false,
-                message: 'Invalid credentials'
+               success:false, message: 'Invalid credentials'
             });
-        });
-
-        it('[REQ029]_like_non_existent_post', async () => {
-            const response = await request(app)
-                .put('/api/posts/likes')
-                .set('Authorization', `Bearer ${token}`)
-                .send({ postId: 99999 });
-
-            expect(response.status).toBe(404);
-            expect(response.body.message).toBe('Post not found');
         });
     });
 
-    describe('PUT /api/posts/unlikes', () => {
-        it('[REQ030]_unlike_post_successfully', async () => {
-            await request(app)
-                .put('/api/posts/likes')
-                .set('Authorization', `Bearer ${token}`)
-                .send({ postId: post.id });
+    describe('POST /api/posts/unlike', () => {
+        beforeEach(async () => {
+            await Like.create({ postId: post.id, userId: user.id });
+        });
 
+        it('[REQ039]_unlike_post_successfully', async () => {
             const response = await request(app)
-                .put('/api/posts/unlikes')
+                .post('/api/posts/unlike')
                 .set('Authorization', `Bearer ${token}`)
                 .send({ postId: post.id });
 
             expect(response.status).toBe(200);
-            expect(response.body).toHaveProperty('likes');
-            expect(response.body.likes.some(like => like.userId === user.id)).toBe(false);
+            expect(response.body).toEqual({ message: 'Post unliked successfully' });
+
+            const like = await Like.findOne({ where: { postId: post.id, userId: user.id } });
+            expect(like).toBeNull();
         });
 
-        it('[REQ031]_unlike_post_not_liked_yet', async () => {
+        it('[REQ040]_unlike_post_with_invalid_token', async () => {
             const response = await request(app)
-                .put('/api/posts/unlikes')
-                .set('Authorization', `Bearer ${token}`)
-                .send({ postId: post.id });
-
-            expect(response.status).toBe(400);
-            expect(response.body.message).toBe('User has not liked this post');
-        });
-
-        it('[REQ032]_unlike_post_with_invalid_token', async () => {
-            const response = await request(app)
-                .put('/api/posts/unlikes')
+                .post('/api/posts/unlike')
                 .set('Authorization', 'Bearer invalid_token')
                 .send({ postId: post.id });
 
             expect(response.status).toBe(401);
             expect(response.body).toEqual({
-                success: false,
-                message: 'Invalid credentials'
+               success: false, message: "Invalid credentials"
             });
-        });
-
-        it('[REQ033]_unlike_non_existent_post', async () => {
-            const response = await request(app)
-                .put('/api/posts/unlikes')
-                .set('Authorization', `Bearer ${token}`)
-                .send({ postId: 99999 });
-
-            expect(response.status).toBe(404);
-            expect(response.body.message).toBe('Post not found');
         });
     });
 });

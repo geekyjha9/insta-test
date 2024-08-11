@@ -1,18 +1,16 @@
 import React from "react";
-
-
-
+import { Link } from "react-router-dom";
+import LargeNav from "../components/headers/LargeNav/LargeNav"
+import MobileNav from "../components/headers/MobileNav/MobileNav"
 import Feed from "../components/Feed/Feed";
-import { useOutletContext } from "react-router-dom";
-
+import TopNav from "../components/headers/TopNav/TopNav";
 
 export default function Home(){
-    const { newPost } = useOutletContext();
     return(
         <>
          
        
-       <Feed newPost={newPost}></Feed>
+       <Feed></Feed>
         </>
        
 
