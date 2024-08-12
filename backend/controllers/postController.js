@@ -1,4 +1,4 @@
-const { Post, User, Like } = require("../models");
+const { Post, User, Like, Comment } = require("../models");
 const { body, validationResult, Result } = require("express-validator");
 
 const validateCreatePost = [
@@ -23,8 +23,6 @@ const createPost = async (req, res) => {
 
     }
 }
-
-
 
 
 const getAllPost = async (req, res) => {
@@ -68,6 +66,8 @@ const getAllPost = async (req, res) => {
 
 
 const likePost = async (req, res) => {
+    console.log("like method have called");
+    
     try {
         const { postId } = req.body;
         const userId = req.user.id;
@@ -125,7 +125,139 @@ const unlikePost = async (req, res) => {
 
     }
 }
-module.exports = { createPost, validateCreatePost, getAllPost, likePost, unlikePost }
+
+// Fetch comments for a post
+const getComments = async (req, res) => {
+    console.log("getAllComments method called");
+
+    try {
+        const { postId } = req.params;
+        const comments = await Comment.findAll({
+            where: { postId },
+            include: [
+                {
+                    model: User,
+                    as: "postedBy", // Ensure this alias matches what you defined in the association
+                    attributes: ["username"] // Include the username
+                }
+            ],
+            order: [['createdAt', 'ASC']]
+        });
+
+        console.log("comments", comments);
+        
+        res.status(200).json(comments);
+    } catch (error) {
+        console.log("Error fetching comments:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+
+// Post a comment
+const addComment = async (req, res) => {
+    console.log("addComments method called");
+
+    try {
+        const { postId, comment, userId } = req.body;
+
+        // Create the comment
+        const newComment = await Comment.create({
+            comment,
+            userId,
+            postId
+        });
+
+        // Fetch the comment along with the username
+        const commentWithUser = await Comment.findOne({
+            where: { id: newComment.id },
+            include: [
+                {
+                    model: User,
+                    as: "postedBy", 
+                    attributes: ["username"] 
+                }
+            ]
+        });
+
+        res.status(201).json(commentWithUser);
+    } catch (error) {
+        console.log("Error adding comment:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+
+// const getComments = async (req, res) => {
+//     console.log("getAllComments method have called");
+  
+//     try {
+//       const { postId } = req.params;
+
+//       console.log("postId", postId);
+      
+//       const comments = await Comment.findAll({
+//         where: { postId },
+//         include: [
+//           {
+//             model: User,
+//             as: "user", // Use the alias defined in the association
+//             attributes: ["username"]
+//           }
+//         ],
+//         order: [['createdAt', 'ASC']]
+//       });
+  
+//       console.log("comments", comments);
+      
+//       res.status(200).json(comments);
+//     } catch (error) {
+//       console.log("Error fetching comments:", error);
+//       res.status(500).json({ message: "Internal Server Error" });
+//     }
+//   };
+  
+
+// Post a comment
+// const addComment = async (req, res) => {
+
+//     console.log("addComments method have called");
+    
+//     try {
+//         const { postId, comment, userId } = req.body;
+
+//         const newComment = await Comment.create({
+//             comment,
+//             userId,
+//             postId
+//         });
+        
+//         res.status(201).json(newComment);
+//     } catch (error) {
+//         console.log("Error adding comment:", error);
+//         res.status(500).json({ message: "Internal Server Error" });
+//     }
+// };
+
+
+module.exports = { createPost, validateCreatePost, getAllPost, likePost, unlikePost, getComments, addComment }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -53,9 +53,13 @@ const loginUser = async (req, res) => {
             { expiresIn: "7d" }
         )
 
-        const {id, username} = user;
+        // const {id, username, fullname, email} = user;
+        const {id, username, fullname} = user;
 
-        res.status(200).json({ token, id, username, message: "Login Successfully" })
+        console.log("sjhdbchsdbcdsb", id, username, fullname, email);
+        
+        // res.status(200).json({ token, id, username, message: "Login Successfully" })
+        res.status(200).json({ token, id, username, fullname, email, message: "Login Successfully" })
     } catch (err) {
         res.status(500).json({ error: err.message })
     }

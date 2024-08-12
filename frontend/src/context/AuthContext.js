@@ -13,6 +13,8 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("token",data.token);
         localStorage.setItem("id",data.id);
         localStorage.setItem("username",data.username);
+        localStorage.setItem("fullname",data.fullname);
+        localStorage.setItem("email",data.email);
         setIsAuthenticated(true)
     }
 
