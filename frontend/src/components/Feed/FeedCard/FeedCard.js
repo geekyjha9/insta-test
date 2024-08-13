@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
+import PostDetailsModal from "../../PostDetailsModal/PostDetailsModal";
 import {
   FaHeart,
   FaRegHeart,
@@ -13,6 +14,9 @@ const FeedCard = ({ feed, onLike, onUnlike, currentUserId }) => {
   const API_URL = window.location.origin.replace("3000", "4000");
   const [comments, setComments] = useState(feed.comments || []);
   const [newComment, setNewComment] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+
   const timeAgo = formatDistanceToNow(new Date(feed.time), { addSuffix: true });
   const isLikedByCurrentUser = feed.likedByUserIds.includes(currentUserId);
 
@@ -69,7 +73,7 @@ const FeedCard = ({ feed, onLike, onUnlike, currentUserId }) => {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // Prevent form submission
+      e.preventDefault();
       handleAddComment();
     }
   };
@@ -121,7 +125,7 @@ const FeedCard = ({ feed, onLike, onUnlike, currentUserId }) => {
             )}
           </button>
 
-          <button className="text-black">
+          <button className="text-black" onClick={() => setIsModalOpen(true)}>
             <FaRegComment />
           </button>
           <button className="text-black">
@@ -149,21 +153,27 @@ const FeedCard = ({ feed, onLike, onUnlike, currentUserId }) => {
 
       {/* Comment Count */}
       <div className="w-full text-sm text-gray-600 font-thin mb-2">
-        <a href="" className="text-gray-600 font-normal">
+        {/* <a href="" className="text-gray-600 font-normal">
           View all {comments.length} comments
-        </a>
+        </a> */}
+
+<button 
+          onClick={() => setIsModalOpen(true)} 
+          className="text-gray-600 font-normal"
+        >
+          View all {comments.length} comments
+        </button>
       </div>
 
       {/* Comments List */}
-      <div className="w-full text-sm text-gray-600 font-thin mb-2">
+      {/* <div className="w-full text-sm text-gray-600 font-thin mb-2">
         {comments.map((comment) => (
           <div key={comment.id} className="mb-2">
             <p className="font-bold">{comment.postedBy.username}</p>
-            {/* <p className="font-bold">{comment.userId}</p> */}
             <p>{comment.comment}</p>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* Add Comment */}
       <div className="w-full flex items-center justify-between border-b border-gray-300 pt-2">
@@ -171,7 +181,7 @@ const FeedCard = ({ feed, onLike, onUnlike, currentUserId }) => {
           type="text"
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
-          onKeyDown={handleKeyDown} // Handle Enter key press
+          onKeyDown={handleKeyDown}
           className="w-full bg-transparent border-none outline-none text-sm text-gray-600 py-2"
           placeholder="Add a Comment ...."
         />
@@ -179,6 +189,19 @@ const FeedCard = ({ feed, onLike, onUnlike, currentUserId }) => {
           <FaRegSmile />
         </button>
       </div>
+
+
+      {/* PostDetailsModal */}
+      <PostDetailsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        feed={feed}
+        comments={comments}
+        handleAddComment={handleAddComment}
+        newComment={newComment}
+        setNewComment={setNewComment}
+        handleKeyDown={handleKeyDown}
+      />
     </div>
   );
 };
